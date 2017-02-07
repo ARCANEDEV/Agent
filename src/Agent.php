@@ -141,6 +141,13 @@ class Agent extends Mobile_Detect implements AgentContract
             : parent::getRules();
     }
 
+    /**
+     * Get the device name.
+     *
+     * @param  string|null  $userAgent
+     *
+     * @return string
+     */
     public function device($userAgent = null)
     {
         // Get device rules
@@ -155,6 +162,8 @@ class Agent extends Mobile_Detect implements AgentContract
     }
 
     /**
+     * Get the browser name.
+     *
      * @param  string|null  $userAgent
      *
      * @return string
@@ -190,6 +199,8 @@ class Agent extends Mobile_Detect implements AgentContract
     }
 
     /**
+     * Get the platform name.
+     *
      * @param  string|null  $userAgent
      *
      * @return string
@@ -206,6 +217,7 @@ class Agent extends Mobile_Detect implements AgentContract
     }
 
     /**
+     * Get the languages.
      *
      * @param  string|null  $acceptLanguage
      *

@@ -47,6 +47,51 @@ interface Agent
     public function version($propertyName, $type = Mobile_Detect::VERSION_TYPE_STRING);
 
     /**
+     * Get the device name.
+     *
+     * @param  string|null  $userAgent
+     *
+     * @return string
+     */
+    public function device($userAgent = null);
+
+    /**
+     * Get the browser name.
+     *
+     * @param  string|null  $userAgent
+     *
+     * @return string
+     */
+    public function browser($userAgent = null);
+
+    /**
+     * Get the robot name.
+     *
+     * @param  string|null  $userAgent
+     *
+     * @return string
+     */
+    public function robot($userAgent = null);
+
+    /**
+     * Get the platform name.
+     *
+     * @param  string|null  $userAgent
+     *
+     * @return string
+     */
+    public function platform($userAgent = null);
+
+    /**
+     * Get the languages.
+     *
+     * @param  string|null  $acceptLanguage
+     *
+     * @return array
+     */
+    public function languages($acceptLanguage = null);
+
+    /**
      * Check if the device is mobile.
      * Returns true if any type of mobile device detected, including special ones
      *
