@@ -1,0 +1,43 @@
+{
+    "name":        "arcanedev/agent",
+    "description": "A PHP user agent parser based on Mobiledetect.",
+    "keywords":    ["arcanedev", "laravel", "mobile", "detect", "detector", "devices", "user agent"],
+    "homepage":    "https://github.com/ARCANEDEV/Agent",
+    "authors": [
+        {
+            "name":     "ARCANEDEV",
+            "email":    "arcanedev.maroc@gmail.com",
+            "homepage": "https://github.com/arcanedev-maroc",
+            "role":     "Developer"
+        }
+    ],
+    "type":    "library",
+    "license": "MIT",
+    "require": {
+        "php":                          ">=5.6.4",
+        "arcanedev/support":            "~3.0",
+        "mobiledetect/mobiledetectlib": "~2.8"
+    },
+    "require-dev": {
+        "phpunit/phpcov":  "~3.0",
+        "phpunit/phpunit": "~5.0"
+    },
+    "autoload": {
+        "psr-4": {
+            "Arcanedev\\Agent\\": "src/"
+        }
+    },
+    "autoload-dev": {
+        "psr-4": {
+            "Arcanedev\\Agent\\Tests\\": "tests/"
+        }
+    },
+    "scripts": {
+        "testbench": "composer require --dev \"orchestra/testbench=~3.0\""
+    },
+    "extra": {
+        "branch-alias": {
+            "dev-master": "1.2-dev"
+        }
+    }
+}
