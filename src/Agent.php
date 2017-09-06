@@ -1,6 +1,8 @@
 <?php namespace Arcanedev\Agent;
 
 use Arcanedev\Agent\Contracts\Agent as AgentContract;
+use Arcanedev\Agent\Detectors\CrawlerDetector;
+use Illuminate\Support\Str;
 use Mobile_Detect;
 
 /**
@@ -11,10 +13,11 @@ use Mobile_Detect;
  */
 class Agent extends Mobile_Detect implements AgentContract
 {
-    /* ------------------------------------------------------------------------------------------------
+    /* -----------------------------------------------------------------
      |  Properties
-     | ------------------------------------------------------------------------------------------------
+     | -----------------------------------------------------------------
      */
+
     /**
      * List of desktop devices.
      *
@@ -83,26 +86,31 @@ class Agent extends Mobile_Detect implements AgentContract
     ];
 
     /**
-     * List of robots.
+     * Crawler detector instance.
      *
-     * @var array
+     * @var \Arcanedev\Agent\Detectors\CrawlerDetector
      */
-    protected static $robots = [
-        'Google'      => 'googlebot',
-        'MSNBot'      => 'msnbot',
-        'Baiduspider' => 'baiduspider',
-        'Bing'        => 'bingbot',
-        'Yahoo'       => 'yahoo',
-        'Lycos'       => 'lycos',
-        'Facebook'    => 'facebookexternalhit',
-        'Twitter'     => 'Twitterbot',
-        'Yandex'      => 'Yandex',
-    ];
+    protected static $crawlerDetector;
 
-    /* ------------------------------------------------------------------------------------------------
+    /* -----------------------------------------------------------------
      |  Getters & Setters
-     | ------------------------------------------------------------------------------------------------
+     | -----------------------------------------------------------------
      */
+
+    /**
+     * Get the crawler detector.
+     *
+     * @return \Arcanedev\Agent\Detectors\CrawlerDetector
+     */
+    public function getCrawlerDetector()
+    {
+        if (self::$crawlerDetector === null) {
+            self::$crawlerDetector = new CrawlerDetector;
+        }
+
+        return self::$crawlerDetector;
+    }
+
     /**
      * Get all detection rules. These rules include the additional
      * platforms and browsers.
@@ -188,14 +196,9 @@ class Agent extends Mobile_Detect implements AgentContract
      */
     public function robot($userAgent = null)
     {
-        // Get bot rules
-        $rules = $this->mergeRules(
-            static::$robots, // NEW
-            [static::$utilities['Bot']],
-            [static::$utilities['MobileBot']]
-        );
-
-        return $this->findDetectionRulesAgainstUA($rules, $userAgent);
+        return $this->isRobot($userAgent)
+            ? ucfirst($this->getCrawlerDetector()->getMatches())
+            : false;
     }
 
     /**
@@ -261,20 +264,19 @@ class Agent extends Mobile_Detect implements AgentContract
     {
         // Loop given rules
         foreach ($rules as $key => $regex) {
-            if (empty($regex)) continue;
-
             // Check match
-            if ($this->match($regex, $userAgent))
+            if ( ! empty($regex) && $this->match($regex, $userAgent))
                 return $key ?: reset($this->matchesArray);
         }
 
         return false;
     }
 
-    /* ------------------------------------------------------------------------------------------------
-     |  Main Functions
-     | ------------------------------------------------------------------------------------------------
+    /* -----------------------------------------------------------------
+     |  Main Methods
+     | -----------------------------------------------------------------
      */
+
     /**
      * Check the version of the given property in the User-Agent.
      * Will return a float number. (eg. 2_0 will return 2.0, 4.3.1 will return 4.31)
@@ -304,10 +306,11 @@ class Agent extends Mobile_Detect implements AgentContract
         return parent::version($propertyName, $type);
     }
 
-    /* ------------------------------------------------------------------------------------------------
+    /* -----------------------------------------------------------------
      |  Check Methods
-     | ------------------------------------------------------------------------------------------------
+     | -----------------------------------------------------------------
      */
+
     /**
      * Check if the device is a desktop computer.
      *
@@ -315,7 +318,7 @@ class Agent extends Mobile_Detect implements AgentContract
      */
     public function isDesktop()
     {
-        return ! $this->isMobile() && ! $this->isTablet() && ! $this->isRobot();
+        return ! ($this->isMobile() || $this->isTablet() || $this->isRobot());
     }
 
     /**
@@ -327,19 +330,7 @@ class Agent extends Mobile_Detect implements AgentContract
      */
     public function isRobot($userAgent = null)
     {
-        // Get bot rules
-        $rules = $this->mergeRules(
-            [static::$utilities['Bot']],
-            [static::$utilities['MobileBot']],
-            static::$robots // NEW
-        );
-
-        foreach ($rules as $regex) {
-            if ($this->match($regex, $userAgent))
-                return true;
-        }
-
-        return false;
+        return $this->getCrawlerDetector()->isCrawler($userAgent ?: $this->userAgent);
     }
 
     /**
@@ -352,10 +343,11 @@ class Agent extends Mobile_Detect implements AgentContract
         return $this->isMobile() && ! $this->isTablet();
     }
 
-    /* ------------------------------------------------------------------------------------------------
-     |  Other Functions
-     | ------------------------------------------------------------------------------------------------
+    /* -----------------------------------------------------------------
+     |  Other Methods
+     | -----------------------------------------------------------------
      */
+
     /**
      * Merge multiple rules into one array.
      *
@@ -369,17 +361,12 @@ class Agent extends Mobile_Detect implements AgentContract
 
         foreach ($rulesGroups as $rules) {
             foreach ($rules as $key => $value) {
-                if (empty($merged[$key])) {
+                if (empty($merged[$key]))
                     $merged[$key] = $value;
-                }
-                else {
-                    if (is_array($merged[$key])) {
-                        $merged[$key][] = $value;
-                    }
-                    else {
-                        $merged[$key] .= '|' . $value;
-                    }
-                }
+                elseif (is_array($merged[$key]))
+                    $merged[$key][] = $value;
+                else
+                    $merged[$key] .= '|' . $value;
             }
         }
 
@@ -399,7 +386,7 @@ class Agent extends Mobile_Detect implements AgentContract
     public function __call($name, $arguments)
     {
         // Make sure the name starts with 'is', otherwise
-        if (substr($name, 0, 2) != 'is') {
+        if ( ! Str::startsWith($name, ['is'])) {
             throw new \BadMethodCallException("No such method exists: $name");
         }
 

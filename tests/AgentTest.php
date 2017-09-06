@@ -225,6 +225,17 @@ class AgentTest extends TestCase
         }
     }
 
+    /**
+     * @test
+     *
+     * @expectedException         \BadMethodCallException
+     * @expectedExceptionMessage  No such method exists: canUseIE
+     */
+    public function it_must_throw_exception_on_invalid_method_name()
+    {
+        $this->agent->canUseIE();
+    }
+
     /* ------------------------------------------------------------------------------------------------
      |  Data
      | ------------------------------------------------------------------------------------------------
@@ -317,16 +328,16 @@ class AgentTest extends TestCase
         return [
             [
                 'Mozilla/5.0 (compatible; Googlebot/2.1; +http://www.google.com/bot.html)',
-                'Google',
+                'Googlebot',
             ],[
                 'facebookexternalhit/1.1 (+http(s)://www.facebook.com/externalhit_uatext.php)',
-                'Facebook',
+                'Facebookexternalhit',
             ],[
                 'Mozilla/5.0 (compatible; bingbot/2.0; +http://www.bing.com/bingbot.htm)',
-                'Bing',
+                'Bingbot',
             ],[
                 'Twitterbot/1.0',
-                'Twitter',
+                'Twitterbot',
             ],[
                 'Mozilla/5.0 (compatible; YandexBot/3.0; +http://yandex.com/bots)',
                 'Yandex',
