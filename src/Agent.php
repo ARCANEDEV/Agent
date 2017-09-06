@@ -51,15 +51,16 @@ class Agent extends Mobile_Detect implements AgentContract
      * @var array
      */
     protected static $additionalBrowsers = [
-        'Opera'    => 'Opera|OPR',
-        'Edge'     => 'Edge',
-        'Vivaldi'  => 'Vivaldi',
-        'Chrome'   => 'Chrome',
-        'Firefox'  => 'Firefox',
-        'Safari'   => 'Safari',
-        'IE'       => 'MSIE|IEMobile|MSIEMobile|Trident/[.0-9]+',
-        'Netscape' => 'Netscape',
-        'Mozilla'  => 'Mozilla',
+        'Opera'     => 'Opera|OPR',
+        'Edge'      => 'Edge',
+        'UCBrowser' => 'UCBrowser',
+        'Vivaldi'   => 'Vivaldi',
+        'Chrome'    => 'Chrome',
+        'Firefox'   => 'Firefox',
+        'Safari'    => 'Safari',
+        'IE'        => 'MSIE|IEMobile|MSIEMobile|Trident/[.0-9]+',
+        'Netscape'  => 'Netscape',
+        'Mozilla'   => 'Mozilla',
     ];
 
     /**
