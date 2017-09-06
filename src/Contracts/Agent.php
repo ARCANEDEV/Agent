@@ -10,10 +10,11 @@ use Mobile_Detect;
  */
 interface Agent
 {
-    /* ------------------------------------------------------------------------------------------------
+    /* -----------------------------------------------------------------
      |  Setters & Getters
-     | ------------------------------------------------------------------------------------------------
+     | -----------------------------------------------------------------
      */
+
     /**
      * Set the User-Agent to be used.
      *
@@ -30,6 +31,13 @@ interface Agent
      *                             the headers. The default null is left for backwards compatibility.
      */
     public function setHttpHeaders($httpHeaders = null);
+
+    /**
+     * Get the crawler detector.
+     *
+     * @return \Arcanedev\Agent\Detectors\CrawlerDetector
+     */
+    public function getCrawlerDetector();
 
     /**
      * Check the version of the given property in the User-Agent.
