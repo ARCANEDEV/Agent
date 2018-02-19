@@ -8,17 +8,19 @@
  */
 class AgentServiceProviderTest extends TestCase
 {
-    /* ------------------------------------------------------------------------------------------------
+    /* -----------------------------------------------------------------
      |  Properties
-     | ------------------------------------------------------------------------------------------------
+     | -----------------------------------------------------------------
      */
+
     /** @var  \Arcanedev\Agent\AgentServiceProvider */
     private $provider;
 
-    /* ------------------------------------------------------------------------------------------------
-     |  Main Functions
-     | ------------------------------------------------------------------------------------------------
+    /* -----------------------------------------------------------------
+     |  Main Methods
+     | -----------------------------------------------------------------
      */
+
     public function setUp()
     {
         parent::setUp();
@@ -48,7 +50,7 @@ class AgentServiceProviderTest extends TestCase
         ];
 
         foreach ($expectations as $expected) {
-            $this->assertInstanceOf($expected, $this->provider);
+            static::assertInstanceOf($expected, $this->provider);
         }
     }
 
@@ -59,6 +61,6 @@ class AgentServiceProviderTest extends TestCase
             \Arcanedev\Agent\Contracts\Agent::class,
         ];
 
-        $this->assertSame($expected, $this->provider->provides());
+        static::assertSame($expected, $this->provider->provides());
     }
 }

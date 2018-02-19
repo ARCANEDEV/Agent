@@ -8,17 +8,19 @@
  */
 class AgentTest extends TestCase
 {
-    /* ------------------------------------------------------------------------------------------------
+    /* -----------------------------------------------------------------
      |  Properties
-     | ------------------------------------------------------------------------------------------------
+     | -----------------------------------------------------------------
      */
+
     /** @var  \Arcanedev\Agent\Agent */
     private $agent;
 
-    /* ------------------------------------------------------------------------------------------------
-     |  Main Functions
-     | ------------------------------------------------------------------------------------------------
+    /* -----------------------------------------------------------------
+     |  Main Methods
+     | -----------------------------------------------------------------
      */
+
     public function setUp()
     {
         parent::setUp();
@@ -33,10 +35,11 @@ class AgentTest extends TestCase
         parent::tearDown();
     }
 
-    /* ------------------------------------------------------------------------------------------------
-     |  Test Functions
-     | ------------------------------------------------------------------------------------------------
+    /* -----------------------------------------------------------------
+     |  Tests
+     | -----------------------------------------------------------------
      */
+
     /** @test */
     public function it_can_be_instantiated()
     {
@@ -46,7 +49,7 @@ class AgentTest extends TestCase
         ];
 
         foreach ($expectations as $expected) {
-            $this->assertInstanceOf($expected, $this->agent);
+            static::assertInstanceOf($expected, $this->agent);
         }
     }
 
@@ -57,7 +60,7 @@ class AgentTest extends TestCase
             'HTTP_ACCEPT_LANGUAGE' => 'nl-NL,nl;q=0.8,en-US;q=0.6,en;q=0.4',
         ]);
 
-        $this->assertEquals(['nl-nl', 'nl', 'en-us', 'en'], $this->agent->languages());
+        static::assertEquals(['nl-nl', 'nl', 'en-us', 'en'], $this->agent->languages());
     }
 
     /** @test */
@@ -67,7 +70,7 @@ class AgentTest extends TestCase
             'HTTP_ACCEPT_LANGUAGE' => 'en;q=0.4,en-US,nl;q=0.6',
         ]);
 
-        $this->assertEquals(['en-us', 'nl', 'en'], $this->agent->languages());
+        static::assertEquals(['en-us', 'nl', 'en'], $this->agent->languages());
     }
 
     /**
@@ -82,12 +85,12 @@ class AgentTest extends TestCase
     {
         $this->agent->setUserAgent($ua);
 
-        $this->assertEquals($browser, $this->agent->browser(), $ua);
-        $this->assertTrue($this->agent->is($browser), $browser);
+        static::assertEquals($browser, $this->agent->browser(), $ua);
+        static::assertTrue($this->agent->is($browser), $browser);
 
         if ( ! strpos($browser, ' ')) {
             $method = "is{$browser}";
-            $this->assertTrue($this->agent->{$method}(), $ua);
+            static::assertTrue($this->agent->{$method}(), $ua);
         }
     }
 
@@ -99,7 +102,7 @@ class AgentTest extends TestCase
 
             $browser = $this->agent->browser();
 
-            $this->assertEquals($version, $this->agent->version($browser), $ua);
+            static::assertEquals($version, $this->agent->version($browser), $ua);
         }
     }
 
@@ -114,12 +117,12 @@ class AgentTest extends TestCase
     public function it_can_check_operating_systems($ua, $platform)
     {
         $this->agent->setUserAgent($ua);
-        $this->assertEquals($platform, $this->agent->platform(), $ua);
-        $this->assertTrue($this->agent->is($platform), $platform);
+        static::assertEquals($platform, $this->agent->platform(), $ua);
+        static::assertTrue($this->agent->is($platform), $platform);
 
         if ( ! strpos($platform, ' ')) {
             $method = "is{$platform}";
-            $this->assertTrue($this->agent->{$method}(), $ua);
+            static::assertTrue($this->agent->{$method}(), $ua);
         }
     }
 
@@ -131,7 +134,7 @@ class AgentTest extends TestCase
 
             $platform = $this->agent->platform();
 
-            $this->assertEquals($version, $this->agent->version($platform), $ua);
+            static::assertEquals($version, $this->agent->version($platform), $ua);
         }
     }
 
@@ -141,12 +144,12 @@ class AgentTest extends TestCase
         foreach($this->desktops as $ua) {
             $this->agent->setUserAgent($ua);
 
-            $this->assertTrue($this->agent->isDesktop(), $ua);
+            static::assertTrue($this->agent->isDesktop(), $ua);
 
-            $this->assertFalse($this->agent->isMobile(), $ua);
-            $this->assertFalse($this->agent->isTablet(), $ua);
-            $this->assertFalse($this->agent->isPhone(), $ua);
-            $this->assertFalse($this->agent->isRobot(), $ua);
+            static::assertFalse($this->agent->isMobile(), $ua);
+            static::assertFalse($this->agent->isTablet(), $ua);
+            static::assertFalse($this->agent->isPhone(), $ua);
+            static::assertFalse($this->agent->isRobot(), $ua);
         }
     }
 
@@ -156,12 +159,12 @@ class AgentTest extends TestCase
         foreach($this->phones as $ua) {
             $this->agent->setUserAgent($ua);
 
-            $this->assertTrue($this->agent->isPhone(), $ua);
-            $this->assertTrue($this->agent->isMobile(), $ua);
+            static::assertTrue($this->agent->isPhone(), $ua);
+            static::assertTrue($this->agent->isMobile(), $ua);
 
-            $this->assertFalse($this->agent->isDesktop(), $ua);
-            $this->assertFalse($this->agent->isTablet(), $ua);
-            $this->assertFalse($this->agent->isRobot(), $ua);
+            static::assertFalse($this->agent->isDesktop(), $ua);
+            static::assertFalse($this->agent->isTablet(), $ua);
+            static::assertFalse($this->agent->isRobot(), $ua);
         }
     }
 
@@ -176,13 +179,13 @@ class AgentTest extends TestCase
     {
         $this->agent->setUserAgent($ua);
 
-        $this->assertTrue($this->agent->isRobot(), $ua);
-        $this->assertEquals($robot, $this->agent->robot());
+        static::assertTrue($this->agent->isRobot(), $ua);
+        static::assertEquals($robot, $this->agent->robot());
 
-        $this->assertFalse($this->agent->isDesktop(), $ua);
-        $this->assertFalse($this->agent->isMobile(), $ua);
-        $this->assertFalse($this->agent->isTablet(), $ua);
-        $this->assertFalse($this->agent->isPhone(), $ua);
+        static::assertFalse($this->agent->isDesktop(), $ua);
+        static::assertFalse($this->agent->isMobile(), $ua);
+        static::assertFalse($this->agent->isTablet(), $ua);
+        static::assertFalse($this->agent->isPhone(), $ua);
     }
 
     /** @test */
@@ -191,15 +194,15 @@ class AgentTest extends TestCase
         foreach($this->mobileDevices as $ua => $device) {
             $this->agent->setUserAgent($ua);
 
-            $this->assertTrue($this->agent->isMobile(), $ua);
-            $this->assertEquals($device, $this->agent->device(), $ua);
+            static::assertTrue($this->agent->isMobile(), $ua);
+            static::assertEquals($device, $this->agent->device(), $ua);
 
-            $this->assertFalse($this->agent->isDesktop(), $ua);
-            $this->assertFalse($this->agent->isRobot(), $ua);
+            static::assertFalse($this->agent->isDesktop(), $ua);
+            static::assertFalse($this->agent->isRobot(), $ua);
 
             if ( ! strpos($device, ' ')) {
                 $method = "is{$device}";
-                $this->assertTrue($this->agent->{$method}(), "Error: [$method] method on [$ua] user agent");
+                static::assertTrue($this->agent->{$method}(), "Error: [$method] method on [$ua] user agent");
             }
         }
     }
@@ -210,17 +213,17 @@ class AgentTest extends TestCase
         foreach($this->desktopDevices as $ua => $device) {
             $this->agent->setUserAgent($ua);
 
-            $this->assertTrue($this->agent->isDesktop(), $ua);
-            $this->assertEquals($device, $this->agent->device(), $ua);
+            static::assertTrue($this->agent->isDesktop(), $ua);
+            static::assertEquals($device, $this->agent->device(), $ua);
 
-            $this->assertFalse($this->agent->isMobile(), $ua);
-            $this->assertFalse($this->agent->isTablet(), $ua);
-            $this->assertFalse($this->agent->isPhone(), $ua);
-            $this->assertFalse($this->agent->isRobot(), $ua);
+            static::assertFalse($this->agent->isMobile(), $ua);
+            static::assertFalse($this->agent->isTablet(), $ua);
+            static::assertFalse($this->agent->isPhone(), $ua);
+            static::assertFalse($this->agent->isRobot(), $ua);
 
             if ( ! strpos($device, ' ')) {
                 $method = "is{$device}";
-                $this->assertTrue($this->agent->{$method}(), "Error: [$method] method on [$ua] user agent");
+                static::assertTrue($this->agent->{$method}(), "Error: [$method] method on [$ua] user agent");
             }
         }
     }
