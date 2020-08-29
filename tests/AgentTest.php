@@ -21,14 +21,14 @@ class AgentTest extends TestCase
      | -----------------------------------------------------------------
      */
 
-    public function setUp()
+    public function setUp(): void
     {
         parent::setUp();
 
         $this->agent = $this->app->make(\Arcanedev\Agent\Contracts\Agent::class);
     }
 
-    public function tearDown()
+    public function tearDown(): void
     {
         unset($this->agent);
 
@@ -41,7 +41,7 @@ class AgentTest extends TestCase
      */
 
     /** @test */
-    public function it_can_be_instantiated()
+    public function it_can_be_instantiated(): void
     {
         $expectations = [
             \Arcanedev\Agent\Contracts\Agent::class,
@@ -54,7 +54,7 @@ class AgentTest extends TestCase
     }
 
     /** @test */
-    public function it_can_get_languages()
+    public function it_can_get_languages(): void
     {
         $this->agent->setHttpHeaders([
             'HTTP_ACCEPT_LANGUAGE' => 'nl-NL,nl;q=0.8,en-US;q=0.6,en;q=0.4',
@@ -64,7 +64,7 @@ class AgentTest extends TestCase
     }
 
     /** @test */
-    public function it_can_get_languages_sorted()
+    public function it_can_get_languages_sorted(): void
     {
         $this->agent->setHttpHeaders([
             'HTTP_ACCEPT_LANGUAGE' => 'en;q=0.4,en-US,nl;q=0.6',
@@ -81,7 +81,7 @@ class AgentTest extends TestCase
      * @param  string  $ua
      * @param  string  $browser
      */
-    public function it_can_check_browsers($ua, $browser)
+    public function it_can_check_browsers($ua, $browser): void
     {
         $this->agent->setUserAgent($ua);
 
@@ -95,7 +95,7 @@ class AgentTest extends TestCase
     }
 
     /** @test */
-    public function it_can_get_browser_version()
+    public function it_can_get_browser_version(): void
     {
         foreach($this->browserVersions as $ua => $version) {
             $this->agent->setUserAgent($ua);
@@ -114,7 +114,7 @@ class AgentTest extends TestCase
      * @param  string  $ua
      * @param  string  $platform
      */
-    public function it_can_check_operating_systems($ua, $platform)
+    public function it_can_check_operating_systems($ua, $platform): void
     {
         $this->agent->setUserAgent($ua);
         static::assertEquals($platform, $this->agent->platform(), $ua);
@@ -127,7 +127,7 @@ class AgentTest extends TestCase
     }
 
     /** @test */
-    public function it_can_get_os_version()
+    public function it_can_get_os_version(): void
     {
         foreach($this->operatingSystemVersions as $ua => $version) {
             $this->agent->setUserAgent($ua);
@@ -139,7 +139,7 @@ class AgentTest extends TestCase
     }
 
     /** @test */
-    public function it_can_check_is_desktop()
+    public function it_can_check_is_desktop(): void
     {
         foreach($this->desktops as $ua) {
             $this->agent->setUserAgent($ua);
@@ -154,7 +154,7 @@ class AgentTest extends TestCase
     }
 
     /** @test */
-    public function it_can_check_is_phone()
+    public function it_can_check_is_phone(): void
     {
         foreach($this->phones as $ua) {
             $this->agent->setUserAgent($ua);
@@ -175,7 +175,7 @@ class AgentTest extends TestCase
      * @param  string  $ua
      * @param  string  $robot
      */
-    public function it_can_check_is_robot($ua, $robot)
+    public function it_can_check_is_robot($ua, $robot): void
     {
         $this->agent->setUserAgent($ua);
 
@@ -189,7 +189,7 @@ class AgentTest extends TestCase
     }
 
     /** @test */
-    public function it_can_check_is_mobile_device()
+    public function it_can_check_is_mobile_device(): void
     {
         foreach($this->mobileDevices as $ua => $device) {
             $this->agent->setUserAgent($ua);
@@ -208,7 +208,7 @@ class AgentTest extends TestCase
     }
 
     /** @test */
-    public function it_can_check_is_desktop_device()
+    public function it_can_check_is_desktop_device(): void
     {
         foreach($this->desktopDevices as $ua => $device) {
             $this->agent->setUserAgent($ua);
@@ -228,14 +228,12 @@ class AgentTest extends TestCase
         }
     }
 
-    /**
-     * @test
-     *
-     * @expectedException         \BadMethodCallException
-     * @expectedExceptionMessage  No such method exists: canUseIE
-     */
-    public function it_must_throw_exception_on_invalid_method_name()
+    /** @test */
+    public function it_must_throw_exception_on_invalid_method_name(): void
     {
+        $this->expectException(\BadMethodCallException::class);
+        $this->expectExceptionMessage('No such method exists: canUseIE');
+
         $this->agent->canUseIE();
     }
 
