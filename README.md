@@ -12,13 +12,11 @@
 
 *By [ARCANEDEV&copy;](http://www.arcanedev.net/)*
 
-> This package is based on [Agent](https://github.com/erusev/parsedown) package by [@jenssegers](https://github.com/jenssegers/agent).
-
 Feel free to check out the [releases](https://github.com/ARCANEDEV/Agent/releases), [license](LICENSE.md), and [contribution guidelines](CONTRIBUTING.md).
 
 ### Features
 
-  * Laravel `5.1 | 5.2 | 5.3 | 5.4 | 5.5 | 5.6` are Supported.
+  * Laravel `5.1` to `5.7` are Supported.
   * Easy setup & configuration.
   * Well tested (100% code coverage with maximum code quality).
   * Made with :heart: &amp; :coffee:.
@@ -43,7 +41,7 @@ If you discover any security related issues, please email arcanedev.maroc@gmail.
 - [All Contributors][link-contributors]
 
 [badge_license]:     https://img.shields.io/packagist/l/arcanedev/agent.svg?style=flat-square
-[badge_laravel]:     https://img.shields.io/badge/Laravel-5.1%20to%205.6-orange.svg?style=flat-square
+[badge_laravel]:     https://img.shields.io/badge/Laravel-5.1%20to%205.7-orange.svg?style=flat-square
 [badge_build]:       https://img.shields.io/travis/ARCANEDEV/Agent.svg?style=flat-square
 [badge_coverage]:    https://img.shields.io/scrutinizer/coverage/g/ARCANEDEV/Agent.svg?style=flat-square
 [badge_quality]:     https://img.shields.io/scrutinizer/g/ARCANEDEV/Agent.svg?style=flat-square
