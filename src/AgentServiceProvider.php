@@ -1,6 +1,11 @@
-<?php namespace Arcanedev\Agent;
+<?php
 
-use Arcanedev\Support\PackageServiceProvider;
+declare(strict_types=1);
+
+namespace Arcanedev\Agent;
+
+use Arcanedev\Support\Providers\PackageServiceProvider;
+use Illuminate\Contracts\Support\DeferrableProvider;
 
 /**
  * Class     AgentServiceProvider
@@ -8,7 +13,7 @@ use Arcanedev\Support\PackageServiceProvider;
  * @package  Arcanedev\Agent
  * @author   ARCANEDEV <arcanedev.maroc@gmail.com>
  */
-class AgentServiceProvider extends PackageServiceProvider
+class AgentServiceProvider extends PackageServiceProvider implements DeferrableProvider
 {
     /* -----------------------------------------------------------------
      |  Properties
@@ -30,26 +35,13 @@ class AgentServiceProvider extends PackageServiceProvider
     /**
      * Register the service provider.
      */
-    public function register()
+    public function register(): void
     {
         parent::register();
 
-        $this->singleton(Contracts\Agent::class, function ($app) {
-            /** @var  \Illuminate\Http\Request  $request */
-            $request = $app['request'];
+        $this->registerConfig();
 
-            return new Agent($request->server->all());
-        });
-    }
-
-    /**
-     * Boot the service provider.
-     */
-    public function boot()
-    {
-        parent::boot();
-
-        //
+        $this->singleton(Contracts\Agent::class, Agent::class);
     }
 
     /**
@@ -57,7 +49,7 @@ class AgentServiceProvider extends PackageServiceProvider
      *
      * @return array
      */
-    public function provides()
+    public function provides(): array
     {
         return [
             Contracts\Agent::class,

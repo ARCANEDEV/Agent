@@ -7,12 +7,12 @@ namespace Arcanedev\Agent\Contracts;
 use Illuminate\Http\Request;
 
 /**
- * Interface  Agent
+ * Interface     Detector
  *
- * @package   Arcanedev\Agent\Contracts
- * @author    ARCANEDEV <arcanedev.maroc@gmail.com>
+ * @package  Arcanedev\Agent\Contracts
+ * @author   ARCANEDEV <arcanedev.maroc@gmail.com>
  */
-interface Agent
+interface Detector
 {
     /* -----------------------------------------------------------------
      |  Main Methods
@@ -20,11 +20,11 @@ interface Agent
      */
 
     /**
-     * Parse the given request.
+     * Handle the given request.
      *
-     * @param  \Illuminate\Http\Request|null  $request
+     * @param  \Illuminate\Http\Request  $request
      *
-     * @return \Arcanedev\Agent\Contracts\Agent
+     * @return $this
      */
-    public function parse(Request $request = null): Agent;
+    public function handle(Request $request): Detector;
 }
