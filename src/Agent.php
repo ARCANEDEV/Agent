@@ -1,17 +1,24 @@
-<?php namespace Arcanedev\Agent;
+<?php
 
-use Arcanedev\Agent\Contracts\Agent as AgentContract;
-use Arcanedev\Agent\Detectors\CrawlerDetector;
-use Illuminate\Support\Str;
-use Mobile_Detect;
+declare(strict_types=1);
+
+namespace Arcanedev\Agent;
+
+use Arcanedev\Agent\Contracts\{Agent as AgentContract, Detector};
+use BadMethodCallException;
+use Illuminate\Contracts\Foundation\Application;
+use Illuminate\Http\Request;
 
 /**
  * Class     Agent
  *
  * @package  Arcanedev\Agent
  * @author   ARCANEDEV <arcanedev.maroc@gmail.com>
+ *
+ * @method  \Arcanedev\Agent\Detectors\DeviceDetector   drive()
+ * @method  \Arcanedev\Agent\Detectors\LanguageDetector language()
  */
-class Agent extends Mobile_Detect implements AgentContract
+class Agent implements AgentContract
 {
     /* -----------------------------------------------------------------
      |  Properties
@@ -19,79 +26,36 @@ class Agent extends Mobile_Detect implements AgentContract
      */
 
     /**
-     * List of desktop devices.
+     * @var \Illuminate\Contracts\Foundation\Application
+     */
+    protected $app;
+
+    /**
+     * @var \Illuminate\Http\Request
+     */
+    protected $request;
+
+    /**
+     * Parsed request.
      *
      * @var array
      */
-    protected static $additionalDevices = [
-        'Macintosh' => 'Macintosh',
-    ];
+    protected $parsed;
+
+    /* -----------------------------------------------------------------
+     |  Constructor
+     | -----------------------------------------------------------------
+     */
 
     /**
-     * List of additional operating systems.
+     * Agent constructor.
      *
-     * @var array
+     * @param  \Illuminate\Contracts\Foundation\Application  $app
      */
-    protected static $additionalOperatingSystems = [
-        'Windows'    => 'Windows',
-        'Windows NT' => 'Windows NT',
-        'OS X'       => 'Mac OS X',
-        'Debian'     => 'Debian',
-        'Ubuntu'     => 'Ubuntu',
-        'Macintosh'  => 'PPC',
-        'OpenBSD'    => 'OpenBSD',
-        'Linux'      => 'Linux',
-        'ChromeOS'   => 'CrOS',
-    ];
-
-    /**
-     * List of additional browsers.
-     * Note: 'Vivaldi' must be above Chrome, otherwise it'll fail.
-     *
-     * @var array
-     */
-    protected static $additionalBrowsers = [
-        'Opera'     => 'Opera|OPR',
-        'Edge'      => 'Edge',
-        'UCBrowser' => 'UCBrowser',
-        'Vivaldi'   => 'Vivaldi',
-        'Chrome'    => 'Chrome',
-        'Firefox'   => 'Firefox',
-        'Safari'    => 'Safari',
-        'IE'        => 'MSIE|IEMobile|MSIEMobile|Trident/[.0-9]+',
-        'Netscape'  => 'Netscape',
-        'Mozilla'   => 'Mozilla',
-    ];
-
-    /**
-     * List of additional properties.
-     *
-     * @var array
-     */
-    protected static $additionalProperties = [
-        // Operating systems
-        'Windows'      => 'Windows NT [VER]',
-        'Windows NT'   => 'Windows NT [VER]',
-        'OS X'         => 'OS X [VER]',
-        'BlackBerryOS' => ['BlackBerry[\w]+/[VER]', 'BlackBerry.*Version/[VER]', 'Version/[VER]'],
-        'AndroidOS'    => 'Android [VER]',
-        'ChromeOS'     => 'CrOS x86_64 [VER]',
-
-        // Browsers
-        'Opera'    => [' OPR/[VER]', 'Opera Mini/[VER]', 'Version/[VER]', 'Opera [VER]'],
-        'Netscape' => 'Netscape/[VER]',
-        'Mozilla'  => 'rv:[VER]',
-        'IE'       => ['IEMobile/[VER];', 'IEMobile [VER]', 'MSIE [VER];', 'rv:[VER]'],
-        'Edge'     => 'Edge/[VER]',
-        'Vivaldi'  => 'Vivaldi/[VER]',
-    ];
-
-    /**
-     * Crawler detector instance.
-     *
-     * @var \Arcanedev\Agent\Detectors\CrawlerDetector
-     */
-    protected static $crawlerDetector;
+    public function __construct(Application $app)
+    {
+        $this->app = $app;
+    }
 
     /* -----------------------------------------------------------------
      |  Getters & Setters
@@ -99,178 +63,47 @@ class Agent extends Mobile_Detect implements AgentContract
      */
 
     /**
-     * Get the crawler detector.
+     * Set the request instance.
      *
-     * @return \Arcanedev\Agent\Detectors\CrawlerDetector
+     * @param  \Illuminate\Http\Request  $request
+     *
+     * @return $this
      */
-    public function getCrawlerDetector()
+    public function setRequest(Request $request)
     {
-        if (self::$crawlerDetector === null) {
-            self::$crawlerDetector = new CrawlerDetector;
-        }
+        $this->request = $request;
 
-        return self::$crawlerDetector;
+        return $this;
     }
 
     /**
-     * Get all detection rules. These rules include the additional
-     * platforms and browsers.
+     * Get the request instance.
+     *
+     * @return \Illuminate\Http\Request
+     */
+    public function getRequest(): Request
+    {
+        return $this->request;
+    }
+
+    /**
+     * Get the detectors.
      *
      * @return array
      */
-    public function getDetectionRulesExtended()
+    protected function detectors(): array
     {
-        static $rules;
-
-        if ( ! $rules) {
-            $rules = $this->mergeRules(
-                static::$additionalDevices, // NEW
-                static::getPhoneDevices(),
-                static::getTabletDevices(),
-                static::getOperatingSystems(),
-                static::$additionalOperatingSystems, // NEW
-                static::getBrowsers(),
-                static::$additionalBrowsers, // NEW
-                static::getUtilities()
-            );
-        }
-
-        return $rules;
+        return $this->app['config']['agent.detectors'];
     }
 
     /**
-     * Retrieve the current set of rules.
+     * @param  string  $key
      *
-     * @return array
+     * @return \Arcanedev\Agent\Contracts\Detector|mixed
      */
-    public function getRules()
+    protected function getParsed(string $key): Detector
     {
-        return $this->detectionType == static::DETECTION_TYPE_EXTENDED
-            ? static::getDetectionRulesExtended()
-            : parent::getRules();
-    }
-
-    /**
-     * Get the device name.
-     *
-     * @param  string|null  $userAgent
-     *
-     * @return string
-     */
-    public function device($userAgent = null)
-    {
-        // Get device rules
-        $rules = $this->mergeRules(
-            static::$additionalDevices, // NEW
-            static::$phoneDevices,
-            static::$tabletDevices,
-            static::$utilities
-        );
-
-        return $this->findDetectionRulesAgainstUA($rules, $userAgent);
-    }
-
-    /**
-     * Get the browser name.
-     *
-     * @param  string|null  $userAgent
-     *
-     * @return string
-     */
-    public function browser($userAgent = null)
-    {
-        // Get browser rules
-        $rules = $this->mergeRules(
-            static::$additionalBrowsers, // NEW
-            static::$browsers
-        );
-
-        return $this->findDetectionRulesAgainstUA($rules, $userAgent);
-    }
-
-    /**
-     * Get the robot name.
-     *
-     * @param  string|null  $userAgent
-     *
-     * @return string
-     */
-    public function robot($userAgent = null)
-    {
-        return $this->isRobot($userAgent)
-            ? ucfirst($this->getCrawlerDetector()->getMatches())
-            : false;
-    }
-
-    /**
-     * Get the platform name.
-     *
-     * @param  string|null  $userAgent
-     *
-     * @return string
-     */
-    public function platform($userAgent = null)
-    {
-        // Get platform rules
-        $rules = $this->mergeRules(
-            static::$operatingSystems,
-            static::$additionalOperatingSystems // NEW
-        );
-
-        return $this->findDetectionRulesAgainstUA($rules, $userAgent);
-    }
-
-    /**
-     * Get the languages.
-     *
-     * @param  string|null  $acceptLanguage
-     *
-     * @return array
-     */
-    public function languages($acceptLanguage = null)
-    {
-        if ( ! $acceptLanguage) {
-            $acceptLanguage = $this->getHttpHeader('HTTP_ACCEPT_LANGUAGE');
-        }
-
-        $languages = [];
-
-        if ($acceptLanguage) {
-            // Parse accept language string.
-            foreach (explode(',', $acceptLanguage) as $piece) {
-                $parts = explode(';', $piece);
-                $language = strtolower($parts[0]);
-                $priority = empty($parts[1]) ? 1. : floatval(str_replace('q=', '', $parts[1]));
-                $languages[$language] = $priority;
-            }
-
-            // Sort languages by priority.
-            arsort($languages);
-
-            $languages = array_keys($languages);
-        }
-
-        return $languages;
-    }
-
-    /**
-     * Match a detection rule and return the matched key.
-     *
-     * @param  array  $rules
-     * @param  null   $userAgent
-     *
-     * @return string
-     */
-    protected function findDetectionRulesAgainstUA(array $rules, $userAgent = null)
-    {
-        // Loop given rules
-        foreach ($rules as $key => $regex) {
-            // Check match
-            if ( ! empty($regex) && $this->match($regex, $userAgent))
-                return $key ?: reset($this->matchesArray);
-        }
-
-        return false;
+        return $this->parsed[$key];
     }
 
     /* -----------------------------------------------------------------
@@ -279,32 +112,23 @@ class Agent extends Mobile_Detect implements AgentContract
      */
 
     /**
-     * Check the version of the given property in the User-Agent.
-     * Will return a float number. (eg. 2_0 will return 2.0, 4.3.1 will return 4.31)
+     * Parse the given request.
      *
-     * @param  string  $propertyName  The name of the property. See self::getProperties() array
-     *                                keys for all possible properties.
-     * @param  string  $type          Either self::VERSION_TYPE_STRING to get a string value or
-     *                                self::VERSION_TYPE_FLOAT indicating a float value. This parameter is optional
-     *                                and defaults to self::VERSION_TYPE_STRING. Passing an invalid parameter will
-     *                                default to the this type as well.
+     * @param  \Illuminate\Http\Request|null  $request
      *
-     * @return string|float The version of the property we are trying to extract.
+     * @return $this
      */
-    public function version($propertyName, $type = self::VERSION_TYPE_STRING)
+    public function parse(Request $request = null): AgentContract
     {
-        $check = key(static::$additionalProperties);
-
-        // Check if the additional properties have been added already
-        if ( ! array_key_exists($check, static::$properties)) {
-            // TODO: why is mergeRules not working here?
-            static::$properties = array_merge(
-                static::$properties,
-                static::$additionalProperties
-            );
+        if ( ! is_null($request)) {
+            $this->setRequest($request);
         }
 
-        return parent::version($propertyName, $type);
+        foreach ($this->detectors() as $key => $detector) {
+            $this->parsed[$key] = call_user_func_array([$this->app->make($detector['driver']), 'handle'], [$this->getRequest()]);
+        }
+
+        return $this;
     }
 
     /* -----------------------------------------------------------------
@@ -313,35 +137,15 @@ class Agent extends Mobile_Detect implements AgentContract
      */
 
     /**
-     * Check if the device is a desktop computer.
+     * Check if the detector exists.
+     *
+     * @param  string  $name
      *
      * @return bool
      */
-    public function isDesktop()
+    protected function hasDetector(string $name): bool
     {
-        return ! ($this->isMobile() || $this->isTablet() || $this->isRobot());
-    }
-
-    /**
-     * Check if device is a robot.
-     *
-     * @param  string|null  $userAgent
-     *
-     * @return bool
-     */
-    public function isRobot($userAgent = null)
-    {
-        return $this->getCrawlerDetector()->isCrawler($userAgent ?: $this->userAgent);
-    }
-
-    /**
-     * Check if the device is a mobile phone.
-     *
-     * @return bool
-     */
-    public function isPhone()
-    {
-        return $this->isMobile() && ! $this->isTablet();
+        return array_key_exists($name, $this->detectors());
     }
 
     /* -----------------------------------------------------------------
@@ -350,49 +154,17 @@ class Agent extends Mobile_Detect implements AgentContract
      */
 
     /**
-     * Merge multiple rules into one array.
-     *
-     * @param  array  $rulesGroups
-     *
-     * @return array
-     */
-    protected function mergeRules(...$rulesGroups)
-    {
-        $merged = [];
-
-        foreach ($rulesGroups as $rules) {
-            foreach ($rules as $key => $value) {
-                if (empty($merged[$key]))
-                    $merged[$key] = $value;
-                elseif (is_array($merged[$key]))
-                    $merged[$key][] = $value;
-                else
-                    $merged[$key] .= '|' . $value;
-            }
-        }
-
-        return $merged;
-    }
-
-    /**
-     * Changing detection type to extended.
-     *
-     * @inherit
-     *
      * @param  string  $name
-     * @param  array   $arguments
+     * @param  array   $params
      *
-     * @return bool|mixed
+     * @return \Arcanedev\Agent\Contracts\Detector
      */
-    public function __call($name, $arguments)
+    public function __call($name, $params)
     {
-        // Make sure the name starts with 'is', otherwise
-        if ( ! Str::startsWith($name, ['is'])) {
-            throw new \BadMethodCallException("No such method exists: $name");
+        if ($this->hasDetector($name)) {
+            return $this->getParsed($name);
         }
 
-        $this->setDetectionType(self::DETECTION_TYPE_EXTENDED);
-
-        return $this->matchUAAgainstKey(substr($name, 2));
+        throw new BadMethodCallException("Method [{$name}] not found");
     }
 }

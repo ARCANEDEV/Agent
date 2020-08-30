@@ -1,4 +1,8 @@
-<?php namespace Arcanedev\Agent\Tests;
+<?php
+
+declare(strict_types=1);
+
+namespace Arcanedev\Agent\Tests;
 
 use Orchestra\Testbench\TestCase as BaseTestCase;
 
@@ -27,29 +31,5 @@ abstract class TestCase extends BaseTestCase
         return [
             \Arcanedev\Agent\AgentServiceProvider::class,
         ];
-    }
-
-    /**
-     * Get package aliases.
-     *
-     * @param  \Illuminate\Foundation\Application  $app
-     *
-     * @return array
-     */
-    protected function getPackageAliases($app)
-    {
-        return [
-            'Facade' => \Arcanedev\Agent\Facades\Agent::class,
-        ];
-    }
-
-    /**
-     * Define environment setup.
-     *
-     * @param  \Illuminate\Foundation\Application  $app
-     */
-    protected function getEnvironmentSetUp($app)
-    {
-        //
     }
 }

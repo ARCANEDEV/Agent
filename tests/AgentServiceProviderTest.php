@@ -1,5 +1,7 @@
 <?php namespace Arcanedev\Agent\Tests;
 
+use Illuminate\Contracts\Support\DeferrableProvider;
+
 /**
  * Class     AgentServiceProviderTest
  *
@@ -44,8 +46,9 @@ class AgentServiceProviderTest extends TestCase
     {
         $expectations = [
             \Illuminate\Support\ServiceProvider::class,
-            \Arcanedev\Support\ServiceProvider::class,
-            \Arcanedev\Support\PackageServiceProvider::class,
+            \Illuminate\Contracts\Support\DeferrableProvider::class,
+            \Arcanedev\Support\Providers\ServiceProvider::class,
+            \Arcanedev\Support\Providers\PackageServiceProvider::class,
             \Arcanedev\Agent\AgentServiceProvider::class,
         ];
 
