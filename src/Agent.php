@@ -15,7 +15,7 @@ use Illuminate\Http\Request;
  * @package  Arcanedev\Agent
  * @author   ARCANEDEV <arcanedev.maroc@gmail.com>
  *
- * @method  \Arcanedev\Agent\Detectors\DeviceDetector   drive()
+ * @method  \Arcanedev\Agent\Detectors\DeviceDetector   device()
  * @method  \Arcanedev\Agent\Detectors\LanguageDetector language()
  */
 class Agent implements AgentContract
@@ -146,7 +146,7 @@ class Agent implements AgentContract
      *
      * @param  string  $key
      *
-     * @return \Arcanedev\Agent\Contracts\Detector
+     * @return \Arcanedev\Agent\Contracts\Detector|mixed
      */
     public function detector(string $key): Detector
     {

@@ -15,6 +15,20 @@ use Illuminate\Http\Request;
 interface Agent
 {
     /* -----------------------------------------------------------------
+     |  Getters & Setters
+     | -----------------------------------------------------------------
+     */
+
+    /**
+     * Set the request instance.
+     *
+     * @param  \Illuminate\Http\Request  $request
+     *
+     * @return \Arcanedev\Agent\Agent
+     */
+    public function setRequest(Request $request);
+
+    /* -----------------------------------------------------------------
      |  Main Methods
      | -----------------------------------------------------------------
      */
@@ -27,4 +41,13 @@ interface Agent
      * @return \Arcanedev\Agent\Contracts\Agent
      */
     public function parse(Request $request = null): Agent;
+
+    /**
+     * Make a detector.
+     *
+     * @param  string  $key
+     *
+     * @return \Arcanedev\Agent\Contracts\Detector|mixed
+     */
+    public function detector(string $key): Detector;
 }
