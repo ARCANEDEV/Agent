@@ -85,31 +85,31 @@ class DeviceDetector implements Detector
     }
 
     /**
-     * Get the browser name.
+     * Get the client name.
      *
      * @return string
      */
-    public function browserName()
+    public function clientName()
     {
         return $this->getClient('name');
     }
 
     /**
-     * Get the browser name.
+     * Get the client name.
      *
      * @return string
      */
-    public function browserShortName()
+    public function clientShortName()
     {
         return $this->getClient('short_name');
     }
 
     /**
-     * Get the browser's version.
+     * Get the client's version.
      *
      * @return string
      */
-    public function browserVersion(): string
+    public function clientVersion(): string
     {
         return $this->getClient('version');
     }
@@ -140,17 +140,17 @@ class DeviceDetector implements Detector
      */
 
     /**
-     * Check the given name matches browser's name.
+     * Check the given name matches client's name.
      *
      * @param  string  $name
      *
      * @return bool
      */
-    public function isBrowserName($name): bool
+    public function isClientName($name): bool
     {
         return in_array($name, [
-            $this->browserName(),
-            $this->browserShortName(),
+            $this->clientName(),
+            $this->clientShortName(),
         ]);
     }
 

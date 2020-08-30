@@ -112,17 +112,17 @@ class AgentTest extends TestCase
      * @dataProvider  provideBrowsersData
      *
      * @param  string  $userAgent
-     * @param  array   $browser
+     * @param  array   $client
      */
-    public function it_can_check_browsers(string $userAgent, array $browser): void
+    public function it_can_check_client(string $userAgent, array $client): void
     {
         $device = $this->parseDevice($userAgent);
 
-        static::assertEquals($browser['name'], $device->browserName(), $userAgent);
-        static::assertEquals($browser['short_name'], $device->browserShortName(), $userAgent);
+        static::assertEquals($client['name'], $device->clientName(), $userAgent);
+        static::assertEquals($client['short_name'], $device->clientShortName(), $userAgent);
 
-        static::assertTrue($device->isBrowserName($browser['name']), $userAgent);
-        static::assertTrue($device->isBrowserName($browser['short_name']), $userAgent);
+        static::assertTrue($device->isClientName($client['name']), $userAgent);
+        static::assertTrue($device->isClientName($client['short_name']), $userAgent);
     }
 
     /**
@@ -133,11 +133,11 @@ class AgentTest extends TestCase
      * @param  string  $userAgent
      * @param  string  $version
      */
-    public function it_can_get_browser_version(string $userAgent, string $version): void
+    public function it_can_get_client_version(string $userAgent, string $version): void
     {
         $device = $this->parseDevice($userAgent);
 
-        static::assertEquals($version, $device->browserVersion(), $userAgent);
+        static::assertEquals($version, $device->clientVersion(), $userAgent);
     }
 
     /**
