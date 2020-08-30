@@ -1,6 +1,6 @@
 {
     "name":        "arcanedev/agent",
-    "description": "A PHP user agent parser based on Mobiledetect.",
+    "description": "Agent is a PHP/Laravel package for detecting devices/bots via the http request.",
     "keywords":    ["arcanedev", "laravel", "mobile", "detect", "detector", "devices", "user agent"],
     "homepage":    "https://github.com/ARCANEDEV/Agent",
     "authors": [

@@ -97,6 +97,16 @@ class Agent implements AgentContract
     }
 
     /**
+     * Get the supported detectors
+     *
+     * @return array
+     */
+    protected function supportedDetectors(): array
+    {
+        return array_keys($this->detectors());
+    }
+
+    /**
      * @param  string  $key
      *
      * @return \Arcanedev\Agent\Contracts\Detector|mixed
@@ -124,11 +134,25 @@ class Agent implements AgentContract
             $this->setRequest($request);
         }
 
-        foreach ($this->detectors() as $key => $detector) {
-            $this->parsed[$key] = call_user_func_array([$this->app->make($detector['driver']), 'handle'], [$this->getRequest()]);
+        foreach ($this->supportedDetectors() as $detector) {
+            $this->parsed[$detector] = $this->detector($detector)->handle($this->getRequest());
         }
 
         return $this;
+    }
+
+    /**
+     * Make a detector.
+     *
+     * @param  string  $key
+     *
+     * @return \Arcanedev\Agent\Contracts\Detector
+     */
+    public function detector(string $key): Detector
+    {
+        $detector = $this->detectors()[$key];
+
+        return $this->app->make($detector['driver']);
     }
 
     /* -----------------------------------------------------------------
