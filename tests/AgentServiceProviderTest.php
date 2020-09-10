@@ -1,11 +1,12 @@
-<?php namespace Arcanedev\Agent\Tests;
+<?php
 
-use Illuminate\Contracts\Support\DeferrableProvider;
+declare(strict_types=1);
+
+namespace Arcanedev\Agent\Tests;
 
 /**
  * Class     AgentServiceProviderTest
  *
- * @package  Arcanedev\Agent\Tests
  * @author   ARCANEDEV <arcanedev.maroc@gmail.com>
  */
 class AgentServiceProviderTest extends TestCase

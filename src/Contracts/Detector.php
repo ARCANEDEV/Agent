@@ -7,10 +7,9 @@ namespace Arcanedev\Agent\Contracts;
 use Illuminate\Http\Request;
 
 /**
- * Interface     Detector
+ * Interface  Detector
  *
- * @package  Arcanedev\Agent\Contracts
- * @author   ARCANEDEV <arcanedev.maroc@gmail.com>
+ * @author    ARCANEDEV <arcanedev.maroc@gmail.com>
  */
 interface Detector
 {

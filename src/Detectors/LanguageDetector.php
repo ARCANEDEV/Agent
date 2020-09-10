@@ -10,7 +10,6 @@ use Illuminate\Http\Request;
 /**
  * Class     LanguageDetector
  *
- * @package  Arcanedev\Agent\Detectors
  * @author   ARCANEDEV <arcanedev.maroc@gmail.com>
  */
 class LanguageDetector implements Detector
