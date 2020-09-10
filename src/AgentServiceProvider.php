@@ -10,7 +10,6 @@ use Illuminate\Contracts\Support\DeferrableProvider;
 /**
  * Class     AgentServiceProvider
  *
- * @package  Arcanedev\Agent
  * @author   ARCANEDEV <arcanedev.maroc@gmail.com>
  */
 class AgentServiceProvider extends PackageServiceProvider implements DeferrableProvider

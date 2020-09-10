@@ -9,7 +9,6 @@ use Illuminate\Http\Request;
 /**
  * Class     AgentTest
  *
- * @package  Arcanedev\Agent\Tests
  * @author   ARCANEDEV <arcanedev.maroc@gmail.com>
  */
 class AgentTest extends TestCase

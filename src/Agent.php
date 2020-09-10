@@ -4,7 +4,8 @@ declare(strict_types=1);
 
 namespace Arcanedev\Agent;
 
-use Arcanedev\Agent\Contracts\{Agent as AgentContract, Detector};
+use Arcanedev\Agent\Contracts\Agent as AgentContract;
+use Arcanedev\Agent\Contracts\Detector;
 use BadMethodCallException;
 use Illuminate\Contracts\Foundation\Application;
 use Illuminate\Http\Request;
@@ -12,7 +13,6 @@ use Illuminate\Http\Request;
 /**
  * Class     Agent
  *
- * @package  Arcanedev\Agent
  * @author   ARCANEDEV <arcanedev.maroc@gmail.com>
  *
  * @method  \Arcanedev\Agent\Detectors\DeviceDetector   device()

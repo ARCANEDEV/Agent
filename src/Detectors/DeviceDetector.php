@@ -11,7 +11,6 @@ use Illuminate\Http\Request;
 /**
  * Class     DeviceDetector
  *
- * @package  Arcanedev\Agent\Detectors
  * @author   ARCANEDEV <arcanedev.maroc@gmail.com>
  *
  * @mixin  \DeviceDetector\DeviceDetector

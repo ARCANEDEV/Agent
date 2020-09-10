@@ -9,7 +9,6 @@ use Illuminate\Http\Request;
 /**
  * Interface  Agent
  *
- * @package   Arcanedev\Agent\Contracts
  * @author    ARCANEDEV <arcanedev.maroc@gmail.com>
  */
 interface Agent
