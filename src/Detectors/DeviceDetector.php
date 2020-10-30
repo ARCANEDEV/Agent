@@ -145,7 +145,7 @@ class DeviceDetector implements Detector
      *
      * @return bool
      */
-    public function isClientName($name): bool
+    public function isClientName(string $name): bool
     {
         return in_array($name, [
             $this->clientName(),
@@ -160,7 +160,7 @@ class DeviceDetector implements Detector
      *
      * @return bool
      */
-    public function isOsName($name): bool
+    public function isOsName(string $name): bool
     {
         return in_array($name, [
             $this->osName(),
@@ -179,7 +179,7 @@ class DeviceDetector implements Detector
      *
      * @return mixed
      */
-    public function __call($name, $params)
+    public function __call(string $name, array $params)
     {
         return call_user_func_array([$this->detector, $name], $params);
     }
