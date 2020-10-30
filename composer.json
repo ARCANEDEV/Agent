@@ -16,7 +16,7 @@
     "require": {
         "php": "^7.3",
         "arcanedev/support": "^8.0",
-        "piwik/device-detector": "^3.13"
+        "matomo/device-detector": "^4.0"
     },
     "require-dev": {
         "orchestra/testbench": "^6.0",
