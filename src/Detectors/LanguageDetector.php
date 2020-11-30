@@ -63,8 +63,21 @@ class LanguageDetector implements Detector
      */
     public function handle(Request $request): Detector
     {
+        return $this->fromAcceptLanguage(
+            $request->server('HTTP_ACCEPT_LANGUAGE')
+        );
+    }
+
+    /**
+     * Handle from the given accept language.
+     *
+     * @param  string  $acceptLanguage
+     *
+     * @return $this
+     */
+    public function fromAcceptLanguage(string $acceptLanguage): Detector
+    {
         $this->languages = [];
-        $acceptLanguage  = $request->server('HTTP_ACCEPT_LANGUAGE');
 
         if ( ! empty($acceptLanguage)) {
             $this->parse($acceptLanguage);

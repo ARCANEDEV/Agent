@@ -39,8 +39,20 @@ class DeviceDetector implements Detector
      */
     public function handle(Request $request): Detector
     {
-        $userAgent = $request->server('HTTP_USER_AGENT');
+        return $this->fromUserAgent(
+            $request->server('HTTP_USER_AGENT')
+        );
+    }
 
+    /**
+     * Handle from the given user agent.
+     *
+     * @param  string  $userAgent
+     *
+     * @return $this
+     */
+    public function fromUserAgent(string $userAgent): Detector
+    {
         $this->detector = tap(new BaseDetector($userAgent), function (BaseDetector $detector) {
             $detector->parse();
         });
